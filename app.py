@@ -17,7 +17,7 @@ app = Flask(__name__,template_folder="./")
 
 @app.route('/')
 def hello_world():
-	return "Covid-19 Predictor"
+	return render_template("index.html")
 
 @app.route('/index')
 def index():
