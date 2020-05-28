@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 	<html>
 
-	<head>
+	<head >
 		<title>Covid-19 Predictor</title>
 		<script src="https://cdn.plot.ly/plotly-latest.min.js"></script> 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
 	</head>
-	<body>
+	<body bgcolor="#ffffff">
 		<h2 style="text-align: center;">Covid-19 Predictor</h2>
 	<div style="text-align: center;">
 		<form action="/train_LR" method="GET" style="display:inline;">
@@ -22,13 +22,11 @@
 			<button type="submit">Show Analysis</button>
 		</form>
 	</div>
-		<div id="chart1" class="chart">
-		<div id="chart2" class="chart">
-		<div id="chart3" class="chart">
-		<div id="chart4" class="chart">
-
-    	</div>
-
+		<div id="chart1" class="chart"></div>
+		<div id="chart2" class="chart"></div>
+		<div id="chart3" class="chart"></div>
+		<div id="chart4" class="chart"></div>
+    	<h2>{{prediction|safe}}</h2>
     	</body>
 
 
@@ -37,7 +35,7 @@
           var graphs = {{graphJSON | safe }};	
         // Plotly.plot('chart',graphs,{});
 
-        
+
         console.log(typeof graphs);
         console.log(Object.keys(graphs));
         	for(var i=0;i<Object.keys(graphs).length;i++)

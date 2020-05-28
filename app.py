@@ -50,10 +50,11 @@ def show_LR():
 	fig = go.Figure()
 	t1=fig.add_trace(go.Scatter(x=pred_df['Date'], y = pred_df['Cases'] , mode='lines+markers',name='Prediction',line={'color':'red'}))
 	t2=fig.add_trace(go.Scatter(x=actual_df['Date'], y =actual_df['Cases'], mode='lines+markers',name='Actual so far',line={'color':'blue'}))
-	fig.update_layout(autosize=True,title_text='Prediction of Coronavirus Cases in India',xaxis_title='Date',yaxis_title='Corona Virus Cases',plot_bgcolor='rgb(230, 230, 230)')
+	fig.update_layout(paper_bgcolor='rgba(0,0,0,0)',autosize=True,title_text='Prediction of Coronavirus Cases in India',xaxis_title='Date',yaxis_title='Corona Virus Cases',plot_bgcolor='rgb(230, 230, 230)')
 	# data=[t1,t2]
 	graphJSON = json.dumps([fig], cls=plotly.utils.PlotlyJSONEncoder)
-	return render_template('index.html',graphJSON=graphJSON)
+	prediction="The number of cases might reach upto  "+str(int(pred_df["Cases"].iat[-1]))+" on "+ str(pred_df["Date"].iat[-1])+" as per Ridge Regression predictor"
+	return render_template('index.html',graphJSON=graphJSON,prediction=prediction)
 	
 
 	# img.seek(0)
@@ -74,10 +75,13 @@ def show_SVR():
 	fig = go.Figure()
 	fig.add_trace(go.Scatter(x=pred_df['Date'], y = pred_df['Cases'] , mode='lines+markers',name='Prediction',line={'color':'red'}))
 	fig.add_trace(go.Scatter(x=actual_df['Date'], y =actual_df['Cases'], mode='lines+markers',name='Actual so far',line={'color':'blue'}))
-	fig.update_layout(autosize=True,title_text='Prediction of Coronavirus Cases in India',xaxis_title='Date',yaxis_title='Corona Virus Cases',plot_bgcolor='rgb(230, 230, 230)')
+	fig.update_layout(    paper_bgcolor='rgba(0,0,0,0)',autosize=True,title_text='Prediction of Coronavirus Cases in India',xaxis_title='Date',yaxis_title='Corona Virus Cases',plot_bgcolor='rgb(230, 230, 230)')
+	
 	# data=[t1,t2]
 	graphJSON = json.dumps([fig], cls=plotly.utils.PlotlyJSONEncoder)
-	return render_template('index.html',graphJSON=graphJSON)
+	prediction="The number of cases might reach upto  "+str(int(pred_df["Cases"].iat[-1]))+" on "+ str(pred_df["Date"].iat[-1])+" as per Support Vector Regression predictor"
+
+	return render_template('index.html',graphJSON=graphJSON,prediction=prediction)
 
 
 @app.route('/train_arima',methods=['GET'])
@@ -101,10 +105,12 @@ def show_arima():
 	fig = go.Figure()
 	fig.add_trace(go.Scatter(x=pred_df['Date'], y = pred_df['Cases'] , mode='lines+markers',name='Prediction',line={'color':'red'}))
 	fig.add_trace(go.Scatter(x=actual_df['Date'], y =actual_df['Cases'], mode='lines+markers',name='Actual so far',line={'color':'blue'}))
-	fig.update_layout(autosize=True,title_text='Prediction of Coronavirus Cases in India',xaxis_title='Date',yaxis_title='Corona Virus Cases',plot_bgcolor='rgb(230, 230, 230)')
+	fig.update_layout(    paper_bgcolor='rgba(0,0,0,0)',plot_bgcolor='rgba(0,0,0,0)',autosize=True,title_text='Prediction of Coronavirus Cases in India',xaxis_title='Date',yaxis_title='Corona Virus Cases')
 	# data=[t1,t2]
 	graphJSON = json.dumps([fig], cls=plotly.utils.PlotlyJSONEncoder)
-	return render_template('index.html',graphJSON=graphJSON)
+	prediction="The number of cases might reach upto  "+str(int(pred_df["Cases"].iat[-1]))+" on "+ str(pred_df["Date"].iat[-1])+" as per ARIMA predictor"
+
+	return render_template('index.html',graphJSON=graphJSON,prediction=prediction)
 
 
 
