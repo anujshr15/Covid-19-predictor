@@ -7,8 +7,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
 import plotly.graph_objects as go
+from statsmodels.tsa.arima.model import ARIMA
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import SVR
+from pandas.plotting import autocorrelation_plot
+from statsmodels.tsa.arima_model import ARIMAResults
 #from IPython.display import display, Markdown
 # import folium 
 # from folium import plugins
@@ -163,7 +166,7 @@ def train_model_LR():
 	plt.plot(y_test_confirmed)
 	plt.plot(test_linear_pred)
 	plt.legend(['Test Data',f'Polynomial regression with d={grid_search.best_params_["poly__degree"]}'])
-	plt.show()
+	# plt.show()
 
 	lr_model=grid_search.best_estimator_
 	dump(lr_model,'lr_model.joblib')
@@ -211,7 +214,7 @@ def train_model_svr():
 	plt.plot(y_test_confirmed)
 	plt.plot(test_svr_pred)
 	plt.legend(['Test Data','SVR regression'])
-	plt.show()
+	# plt.show()
 	svr_model=grid_search_svr.best_estimator_
 	dump(svr_model,'svr_model.joblib')
 
@@ -232,5 +235,47 @@ def show_model_svr():
 
 	return f"The number of cases might reach upto {int(pred_df_svr['Cases'].iat[-1])} on {pred_df_svr['Date'].iat[-1]} as per support vector regression predictor"
 
+
+
+# autocorrelation_plot(new_df)
+# plt.show()
+# model = ARIMA(new_df, order=(10,1,0))
+# model_fit = model.fit(disp=0)
+# print(model_fit.summary())
+# # plot residual errors
+# residuals = pd.DataFrame(model_fit.resid)
+# residuals.plot()
+# plt.show()
+# residuals.plot(kind='kde')
+# plt.show()
+# print(residuals.describe())
+def train_arima():
+	new_df=pd.Series(actual_df['Cases'].values,index=actual_df['Date'])
+	X=new_df.values
+	# size = int(len(X) * 0.66)
+	# train, test = X[0:size], X[size:len(X)]
+	# history = [x for x in train]
+	# predictions = list()
+	model = ARIMA(X, order=(10,1,0))
+	model_fit = model.fit()
+	
+	model_fit.save('arima_model.pkl')
+	# for t in range(len(test)):
+	# 	model = ARIMA(history, order=(10,1,0))
+	# 	model_fit = model.fit()
+	# 	output = model_fit.forecast()
+	# 	yhat = output[0]
+	# 	predictions.append(yhat)
+	# 	obs = test[t]
+	# 	history.append(obs)
+	# 	print('predicted=%f, expected=%f' % (yhat, obs))
+	# error = sqrt(mean_squared_error(test, predictions))
+	# print('Test MSE: %.3f' % error)
+	# # plot
+	# plt.plot(test)
+	# plt.plot(predictions, color='red')
+	# plt.show()
+
 train_model_LR()
 train_model_svr()
+train_arima()

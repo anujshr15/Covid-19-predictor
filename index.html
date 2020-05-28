@@ -7,13 +7,25 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
 	</head>
 	<body>
-		<form action="/train_LR" method="GET">
-			<button type="submit">Ridge Regression</button>
+		<h2 style="text-align: center;">Covid-19 Predictor</h2>
+	<div style="text-align: center;">
+		<form action="/train_LR" method="GET" style="display:inline;">
+			<button type="submit" >Train Ridge Regression</button>
 		</form>
-		<form action="/train_SVR" method="GET">
-			<button type="submit">Support Vector Regression</button>
+		<form action="/train_SVR" method="GET" style="display:inline;">
+			<button type="submit">Train Support Vector Regression</button>
 		</form>
-		<div id="chart" class="chart">
+		<form action="/train_arima" method="GET" style="display:inline;">
+			<button type="submit">Train ARIMA</button>
+		</form>
+			<form action="/show_graphs" method="GET" style="display:inline;">
+			<button type="submit">Show Analysis</button>
+		</form>
+	</div>
+		<div id="chart1" class="chart">
+		<div id="chart2" class="chart">
+		<div id="chart3" class="chart">
+		<div id="chart4" class="chart">
 
     	</div>
 
@@ -23,7 +35,18 @@
 		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     		<script type="text/javascript">
           var graphs = {{graphJSON | safe }};	
-        Plotly.plot('chart',graphs,{});        
+        // Plotly.plot('chart',graphs,{});
+
+        
+        console.log(typeof graphs);
+        console.log(Object.keys(graphs));
+        	for(var i=0;i<Object.keys(graphs).length;i++)
+        	{	
+        		Plotly.plot('chart'+String(i+1),graphs[i],{});
+        	}
+        
+
+
     	</script>
 	
 	</html>	
