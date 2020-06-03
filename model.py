@@ -2,6 +2,7 @@ import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 from sklearn.model_selection import train_test_split
 import datetime
+from xgboost import XGBRegressor
 # Visualisation libraries
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -90,7 +91,7 @@ current_date=df['Date'].iat[-1]
 # ax.set(xlim=(0, max_cases), ylabel="",xlabel="Cases")
 # sns.despine(left=True, bottom=True)
 
-datewise_df = df[df['Confirmed']>0].copy()
+datewise_df = df.copy()
 
 
 
@@ -152,7 +153,7 @@ X_train_confirmed,X_test_confirmed, y_train_confirmed, y_test_confirmed = train_
 
 def train_model_LR():
 
-	param_grid_lr={'poly__degree':[2,3,4,5,7,8]}
+	param_grid_lr={'poly__degree':[4,5,7,8,9,10]}
 	pipeline = Pipeline(steps=[('poly', PolynomialFeatures()), ('ridge', Ridge())])
 	tscv = TimeSeriesSplit(n_splits=2)
 
@@ -198,11 +199,12 @@ def train_model_svr():
 	#X_train_confirmed,X_test_confirmed, y_train_confirmed, y_test_confirmed = train_test_split(days,confirmed_cases,test_size=0.25,shuffle=False,stratify=None)
 	
 	param_grid_svr = {
-	    "kernel": ["rbf"],
-	    "C": [1e3,1e5,1e7],
-	    "gamma": [1e-8,1e-6,1e-4,1e-5],
-	    "epsilon":[1e-2,1e-5,1e-8,1e-3,1e-4],
-	    "shrinking":[False,True]
+	    "kernel": ["rbf","poly"],
+	    "C": [1e5,1e7,1e8],
+	    "gamma": [1e-8,1e-4,1e-5,1e-9],
+	    "epsilon":[1e-5,1e-8,1e-3],
+	    "shrinking":[False,True],
+	    "degree":[2,5,7]
 	    }
 	tscv = TimeSeriesSplit(n_splits=2)
 	grid_search_svr = GridSearchCV(SVR(),param_grid=param_grid_svr,cv=tscv,scoring='neg_mean_squared_error')
@@ -211,12 +213,26 @@ def train_model_svr():
 	print("MAE: ",mean_absolute_error(y_test_confirmed,test_svr_pred))
 	print("RMSE: ",sqrt(mean_squared_error(y_test_confirmed,test_svr_pred)))
 	# grid_search.best_params_
-	plt.plot(y_test_confirmed)
-	plt.plot(test_svr_pred)
-	plt.legend(['Test Data','SVR regression'])
+	# plt.plot(y_test_confirmed)
+	# plt.plot(test_svr_pred)
+	# plt.legend(['Test Data','SVR regression'])
 	# plt.show()
 	svr_model=grid_search_svr.best_estimator_
 	dump(svr_model,'svr_model.joblib')
+
+
+# def train_xgb():
+# 	m=XGBRegressor(n_estimators=1000,objective= "reg:squarederror")
+# 	m.fit(X_train_confirmed,y_train_confirmed)
+# 	test_xgb_pred=m.predict(X_test_confirmed)
+# 	print("MAE: ",mean_absolute_error(y_test_confirmed,test_xgb_pred))
+# 	print("RMSE: ",sqrt(mean_squared_error(y_test_confirmed,test_xgb_pred)))
+# 	future_xgb_pred=m.predict(future_forecast)
+# 	pred_df_xgb=pd.DataFrame({'Date':pd.Series(future_forecast_dates),'Cases':np.array(future_xgb_pred).reshape(-1,)})
+# 	pred_df_xgb.to_csv('pred_df_xgb.csv')
+
+
+
 
 
 
@@ -276,6 +292,7 @@ def train_arima():
 	# plt.plot(predictions, color='red')
 	# plt.show()
 
-train_model_LR()
-train_model_svr()
-train_arima()
+# train_model_LR()
+# train_model_svr()
+# train_arima()
+train_xgb()

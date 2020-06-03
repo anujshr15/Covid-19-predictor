@@ -6,14 +6,21 @@ import flask
 import datetime
 import io
 import json
+import time,random
 import base64
+import requests
+from urllib.request import Request, urlopen
+from pandas.io.json import json_normalize
 import matplotlib.pyplot as plt
 import seaborn as sns
+import plotly.figure_factory as ff
 import plotly
 import plotly.express as px
 import plotly.graph_objects as go
 from statsmodels.tsa.arima_model import ARIMAResults
 from statsmodels.tsa.arima.model import ARIMA
+from bs4 import BeautifulSoup as soup
+from urllib.request import urlopen
 
 actual_df=pd.read_csv('actual_df.csv',parse_dates=True)
 days_in_future=20
@@ -31,7 +38,37 @@ app = Flask(__name__,template_folder="./")
 
 @app.route('/')
 def hello_world():
-	return render_template("index.html")
+
+	time.sleep(random.randint(0, 2))  # relax and don't let google be angry
+	r = requests.get("https://news.google.com/search?q=coronavirus+india")
+	print(r.status_code)  # Print the status code
+	content = r.text
+	news_summaries = []
+	links=[]
+	bsoup = soup(content, "html.parser")
+	st_divs = bsoup.find_all('h3')[:7]
+	# st_links= bsoup.find_all('a',href=True)[:7]
+	for st_div in st_divs:
+		news_summaries.append(st_div.text)
+	for news in st_divs:
+		for link in news.find_all('a'):
+			links.append("https://news.google.com"+link.get('href')[1:])
+
+		
+
+	
+
+
+	# l = scrape_news_summaries("T-Notes")
+	for n in links:
+		print(n)
+
+
+
+
+
+
+	return render_template("index.html",**locals())
 
 @app.route('/index')
 def index():
@@ -75,13 +112,31 @@ def show_SVR():
 	fig = go.Figure()
 	fig.add_trace(go.Scatter(x=pred_df['Date'], y = pred_df['Cases'] , mode='lines+markers',name='Prediction',line={'color':'red'}))
 	fig.add_trace(go.Scatter(x=actual_df['Date'], y =actual_df['Cases'], mode='lines+markers',name='Actual so far',line={'color':'blue'}))
-	fig.update_layout(    paper_bgcolor='rgba(0,0,0,0)',autosize=True,title_text='Prediction of Coronavirus Cases in India',xaxis_title='Date',yaxis_title='Corona Virus Cases',plot_bgcolor='rgb(230, 230, 230)')
+	fig.update_layout(autosize=True,    paper_bgcolor='rgba(0,0,0,0)',title_text='Prediction of Coronavirus Cases in India',xaxis_title='Date',yaxis_title='Corona Virus Cases',plot_bgcolor='rgb(230, 230, 230)')
 	
 	# data=[t1,t2]
 	graphJSON = json.dumps([fig], cls=plotly.utils.PlotlyJSONEncoder)
 	prediction="The number of cases might reach upto  "+str(int(pred_df["Cases"].iat[-1]))+" on "+ str(pred_df["Date"].iat[-1])+" as per Support Vector Regression predictor"
 
 	return render_template('index.html',graphJSON=graphJSON,prediction=prediction)
+
+
+# @app.route('/train_XGB',methods=['GET'])
+# def show_XGB():
+# 	pred_df=pd.read_csv('pred_df_xgb.csv',parse_dates=True)
+# 	fig = go.Figure()
+# 	fig.add_trace(go.Scatter(x=pred_df['Date'], y = pred_df['Cases'] , mode='lines+markers',name='Prediction',line={'color':'red'}))
+# 	fig.add_trace(go.Scatter(x=actual_df['Date'], y =actual_df['Cases'], mode='lines+markers',name='Actual so far',line={'color':'blue'}))
+# 	fig.update_layout(    paper_bgcolor='rgba(0,0,0,0)',autosize=True,title_text='Prediction of Coronavirus Cases in India',xaxis_title='Date',yaxis_title='Corona Virus Cases',plot_bgcolor='rgb(230, 230, 230)')
+	
+# 	# data=[t1,t2]
+# 	graphJSON = json.dumps([fig], cls=plotly.utils.PlotlyJSONEncoder)
+# 	prediction="The number of cases might reach upto  "+str(int(pred_df["Cases"].iat[-1]))+" on "+ str(pred_df["Date"].iat[-1])+" as per Support Vector Regression predictor"
+
+# 	return render_template('index.html',graphJSON=graphJSON,prediction=prediction)
+
+
+
 
 
 @app.route('/train_arima',methods=['GET'])
@@ -92,7 +147,7 @@ def show_arima():
 	for t in range(days_in_future):
 		model = ARIMA(history, order=(10,1,0))
 		model_fit = model.fit()
-		output = model_fit.forecast()
+		output = model_fit.forecast(disp=0)
 		yhat = output[0]
 		y_arima_pred.append(yhat)
 		# obs = test[t]
@@ -105,12 +160,33 @@ def show_arima():
 	fig = go.Figure()
 	fig.add_trace(go.Scatter(x=pred_df['Date'], y = pred_df['Cases'] , mode='lines+markers',name='Prediction',line={'color':'red'}))
 	fig.add_trace(go.Scatter(x=actual_df['Date'], y =actual_df['Cases'], mode='lines+markers',name='Actual so far',line={'color':'blue'}))
-	fig.update_layout(    paper_bgcolor='rgba(0,0,0,0)',plot_bgcolor='rgba(0,0,0,0)',autosize=True,title_text='Prediction of Coronavirus Cases in India',xaxis_title='Date',yaxis_title='Corona Virus Cases')
+	fig.update_layout(paper_bgcolor='rgba(0,0,0,0)',autosize=True,title_text='Prediction of Coronavirus Cases in India',xaxis_title='Date',yaxis_title='Corona Virus Cases')
 	# data=[t1,t2]
 	graphJSON = json.dumps([fig], cls=plotly.utils.PlotlyJSONEncoder)
 	prediction="The number of cases might reach upto  "+str(int(pred_df["Cases"].iat[-1]))+" on "+ str(pred_df["Date"].iat[-1])+" as per ARIMA predictor"
 
 	return render_template('index.html',graphJSON=graphJSON,prediction=prediction)
+
+
+
+
+
+@app.route('/state_wise',methods=['GET'])
+def state_wise_trend():
+	df=pd.read_csv('https://api.covid19india.org/csv/latest/state_wise.csv',parse_dates=True)
+	fig = go.Figure(data=[go.Table(header=dict(values=df.columns[:5], fill_color='paleturquoise'),
+                 cells=dict(values=[df[df.columns[i]] for i in range(0,5)],
+				 fill_color='lavender'))
+
+                     ])
+	fig.update_layout(autosize=True)
+	graphJSON = json.dumps([fig], cls=plotly.utils.PlotlyJSONEncoder)
+	return render_template('index.html',graphJSON=graphJSON)
+
+
+
+
+
 
 
 

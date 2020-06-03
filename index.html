@@ -1,50 +1,145 @@
 <!DOCTYPE html>
-	<html>
+    <html>
 
-	<head >
-		<title>Covid-19 Predictor</title>
-		<script src="https://cdn.plot.ly/plotly-latest.min.js"></script> 
+    <head >
+        <title>Covid-19 Predictor</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script> 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
-	</head>
-	<body bgcolor="#ffffff">
-		<h2 style="text-align: center;">Covid-19 Predictor</h2>
-	<div style="text-align: center;">
-		<form action="/train_LR" method="GET" style="display:inline;">
-			<button type="submit" >Train Ridge Regression</button>
-		</form>
-		<form action="/train_SVR" method="GET" style="display:inline;">
-			<button type="submit">Train Support Vector Regression</button>
-		</form>
-		<form action="/train_arima" method="GET" style="display:inline;">
-			<button type="submit">Train ARIMA</button>
-		</form>
-			<form action="/show_graphs" method="GET" style="display:inline;">
-			<button type="submit">Show Analysis</button>
-		</form>
-	</div>
-		<div id="chart1" class="chart"></div>
-		<div id="chart2" class="chart"></div>
-		<div id="chart3" class="chart"></div>
-		<div id="chart4" class="chart"></div>
-    	<h2>{{prediction|safe}}</h2>
-    	</body>
 
 
-		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    		<script type="text/javascript">
-          var graphs = {{graphJSON | safe }};	
+        <style type="text/css">
+            body { 
+    animation: fadeInAnimation ease 1s ;
+    animation-iteration-count: 1; 
+    animation-fill-mode: forwards; 
+} 
+
+@keyframes fadeInAnimation { 
+    0% { 
+        opacity: 0; 
+    } 
+    100% { 
+        opacity: 1; 
+    } 
+} 
+
+        </style>
+
+
+    
+    </head>
+    <body bgcolor="#ffffff">
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="/">Covid-19 Predictor</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/train_LR">Ridge Regression</a>
+      </li>
+            <li class="nav-item">
+        <a class="nav-link" href="/train_SVR">Support Vector Regression</a>
+      </li>
+            </li>
+            <li class="nav-item">
+        <a class="nav-link" href="/train_arima">ARIMA</a>
+      </li>
+            </li>
+            <li class="nav-item">
+        <a class="nav-link" href="/show_graphs">Analysis</a>
+      </li>
+            </li>
+            <li class="nav-item">
+        <a class="nav-link" href="/state_wise">Statewise Cases</a>
+      </li>
+    </ul>
+
+  </div>
+</nav>
+    
+        <div id="home">
+            <div id="corona-img"><img id="image" src="https://images.unsplash.com/flagged/photo-1584036561584-b03c19da874c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1489&q=80"
+            style="height: 70vh;width: 100%"></div>
+
+            <div class="card card-body bg-light">
+                <h3>What's new ?</h3>
+                <div id="all_news" style="margin-top: 20px;">
+                   
+                    {% for i in range(news_summaries|length) %}
+                    <p><a href={{links[i]}}> {{news_summaries[i]}} </a></p>
+                    {% endfor %}
+                    
+                </div>
+
+
+<!-- 
+https://news.google.com/search?q=coronavirus+india -->
+
+
+
+
+            </div>
+        </div>
+
+        <div class="container">
+        <div id="chart1" class="chart" style="width:inherit;"></div>
+        <div id="chart2" class="chart" style="width:inherit;"></div>
+        <div id="chart3" class="chart" style="width:inherit;"></div>
+        <div id="chart4" class="chart" style="width:inherit;"></div>
+        <h4>{{prediction|safe}}</h4>
+        </body>
+
+  
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+            <script type="text/javascript">
+                
+
+
+                    var url = window.location.href
+            if(url.split('/').length >1) {
+                document.getElementById('home').style.display='none';
+                }
+
+                
+          var graphs = {{graphJSON | safe }};   
+          // var all_news = {{news_summaries | safe}};
+          // console.log(all_news);
+          // var parent= document.getElementById('all_news')
+          // for(var i=0;i<all_news.length;i++)
+          // {
+          //    var node= document.createElement('P');
+          //    var t = document.createTextNode(all_news[i]);
+          //    node.appendChild(t);
+          //    parent.appendChild(node);
+
+
+          // }
+
+
         // Plotly.plot('chart',graphs,{});
 
 
-        console.log(typeof graphs);
-        console.log(Object.keys(graphs));
-        	for(var i=0;i<Object.keys(graphs).length;i++)
-        	{	
-        		Plotly.plot('chart'+String(i+1),graphs[i],{});
-        	}
+        // console.log(typeof graphs);
+        // console.log(Object.keys(graphs));
+            for(var i=0;i<Object.keys(graphs).length;i++)
+            {   
+                Plotly.plot('chart'+String(i+1),graphs[i],{},{responsive:true});
+            }
         
 
 
-    	</script>
-	
-	</html>	
+
+        </script>
+
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  
+    </html> 
