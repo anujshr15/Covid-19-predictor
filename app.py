@@ -134,19 +134,19 @@ def show_SVR():
 @app.route('/train_arima',methods=['GET'])
 def show_arima():
 
-	history = [x for x in actual_df['Cases'].values]
-	y_arima_pred=[]
-	for t in range(days_in_future):
-		model = ARIMA(history, order=(10,1,0))
-		model_fit = model.fit()
-		output = model_fit.forecast(disp=0)
-		yhat = output[0]
-		y_arima_pred.append(yhat)
-		# obs = test[t]
-		history.append(yhat)
-	N=len(actual_df)
+	# history = [x for x in actual_df['Cases'].values]
+	# y_arima_pred=[]
+	# for t in range(days_in_future):
+	# 	model = ARIMA(history, order=(10,1,0))
+	# 	model_fit = model.fit()
+	# 	output = model_fit.forecast(disp=0)
+	# 	yhat = output[0]
+	# 	y_arima_pred.append(yhat)
+	# 	# obs = test[t]
+	# 	history.append(yhat)
+	# N=len(actual_df)
 
-	pred_df=pd.DataFrame({'Date':pd.Series(future_forecast_dates[-days_in_future:]),'Cases':np.array(y_arima_pred).reshape(-1,)})
+	pred_df=pd.read_csv('arima_pred.csv',parse_dates=True)
 	#actual_df= pd.DataFrame({'Date':np.array(future_forecast_dates[:-days_in_future]).reshape(-1,),'Cases':confirmed_cases.reshape(-1,)})
 	# img = io.BytesIO()
 	fig = go.Figure()

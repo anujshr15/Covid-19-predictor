@@ -230,16 +230,28 @@ def show_model_svr():
 # plt.show()
 # print(residuals.describe())
 def train_arima():
-	new_df=pd.Series(actual_df['Cases'].values,index=actual_df['Date'])
-	X=new_df.values
-	# size = int(len(X) * 0.66)
-	# train, test = X[0:size], X[size:len(X)]
-	# history = [x for x in train]
-	# predictions = list()
-	model = ARIMA(X, order=(10,1,0))
-	model_fit = model.fit()
+	# new_df=pd.Series(actual_df['Cases'].values,index=actual_df['Date'])
+	# X=new_df.values
+	# # size = int(len(X) * 0.66)
+	# # train, test = X[0:size], X[size:len(X)]
+	# # history = [x for x in train]
+	# # predictions = list()
+	# model = ARIMA(X, order=(10,1,0))
+	# model_fit = model.fit()
 	
-	model_fit.save('arima_model.pkl')
+	# model_fit.save('arima_model.pkl')
+	history = [x for x in actual_df['Cases'].values]
+	y_arima_pred=[]
+	for t in range(days_in_future):
+		model = ARIMA(history, order=(10,1,0))
+		model_fit = model.fit()
+		output = model_fit.forecast(disp=0)
+		yhat = output[0]
+		y_arima_pred.append(yhat)
+		# obs = test[t]
+		history.append(yhat)
+	pred_df=pd.DataFrame({'Date':pd.Series(future_forecast_dates[-days_in_future:]),'Cases':np.array(y_arima_pred).reshape(-1,)})
+	pred_df.to_csv('arima_pred.csv')
 	# for t in range(len(test)):
 	# 	model = ARIMA(history, order=(10,1,0))
 	# 	model_fit = model.fit()
@@ -256,7 +268,6 @@ def train_arima():
 	# plt.plot(predictions, color='red')
 	# plt.show()
 
-train_model_LR()
-train_model_svr()
+# train_model_LR()
+# train_model_svr()
 train_arima()
-train_xgb()
