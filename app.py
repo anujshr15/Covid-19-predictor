@@ -144,10 +144,10 @@ def state_wise_trend():
 	df=pd.read_csv('https://api.covid19india.org/csv/latest/state_wise.csv',parse_dates=True)
 	fig = go.Figure(data=[go.Table(header=dict(values=df.columns[:5], fill_color='paleturquoise'),
                  cells=dict(values=[df[df.columns[i]] for i in range(0,5)],
-				 fill_color='lavender'))
+				 fill_color='lavender',height=25))
 
                      ])
-	fig.update_layout(autosize=True,height=1200,margin=dict(t=30, b=0, l=0, r=0))
+	fig.update_layout(autosize=True,height=1200,margin=dict(t=30, b=0, l=0, r=0),font=dict(size=14))
 
 	graphJSON = json.dumps([fig],cls=plotly.utils.PlotlyJSONEncoder)
 	

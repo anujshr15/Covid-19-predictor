@@ -14,7 +14,18 @@
     animation: fadeInAnimation ease 1s ;
     animation-iteration-count: 1; 
     animation-fill-mode: forwards; 
+    margin-bottom: 0;
+    overflow: auto;
 } 
+
+vh -> body { height: 100vh; }
+
+@media (max-width: 768px) {
+  .container {
+    width: 100%;
+    max-width: none;
+  }
+}
 
 @keyframes fadeInAnimation { 
     0% { 
@@ -87,7 +98,7 @@ table {
   </div>
 </nav>
     
-        <div id="home">
+        <div id="home" >
             <div class='overlay-img'>
             <div>
                 <table class="table table-responsive-sm w-100 stack-top" style="text-align: center;">
@@ -105,7 +116,7 @@ table {
                 <div id="all_news" style="margin-top: 20px;">
                    
                     {% for i in range(news_summaries|length) %}
-                    <p><a href={{links[i]}}> {{news_summaries[i]}} </a></p>
+                    <p><a href={{links[i]}} target="_new"> {{news_summaries[i]}} </a></p>
                     {% endfor %}
                     <p><a href="https://news.google.com/search?q=coronavirus+india">See all</a></p>
             </div>
