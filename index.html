@@ -96,7 +96,7 @@ table {
                 </table>
             </div>
             <div id="corona-img" style="opacity: 0.3;" ><img id="image" src="https://images.unsplash.com/flagged/photo-1584036561584-b03c19da874c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1489&q=80"
-            style="height: 70vh;width: 100%"></div>
+            style="height: auto;width: 100%"></div>
             
 
             </div>
@@ -122,18 +122,17 @@ table {
 <!-- 
 https://news.google.com/search?q=coronavirus+india -->
 
-
-
-
             
         </div>
 
         <div class="container">
-        <div id="chart1" class="chart" style="width:inherit;"></div>
-        <div id="chart2" class="chart" style="width:inherit;"></div>
-        <div id="chart3" class="chart" style="width:inherit;"></div>
-        <div id="chart4" class="chart" style="width:inherit;"></div>
+            <div id="all_chart">
+             </div>
+                
         <h4>{{prediction|safe}}</h4>
+    </div>
+    <div id="state_table">
+</div>
         </body>
 
   
@@ -148,28 +147,23 @@ https://news.google.com/search?q=coronavirus+india -->
                 }
 
                 
+            // var state_df = {{df|safe}};
+            // {% if state_df %}
+            // var node = document.getElementById("state_table");
+            // var item = document.createElement("DIV");
+            // var text = document.createTextNode(state_df);
+            // item.appendChild(text);
+            // node.appendChild(item);
+            // {%endif%}
+
+
           var graphs = {{graphJSON | safe }};   
-          // var all_news = {{news_summaries | safe}};
-          // console.log(all_news);
-          // var parent= document.getElementById('all_news')
-          // for(var i=0;i<all_news.length;i++)
-          // {
-          //    var node= document.createElement('P');
-          //    var t = document.createTextNode(all_news[i]);
-          //    node.appendChild(t);
-          //    parent.appendChild(node);
-
-
-          // }
-
-
-        // Plotly.plot('chart',graphs,{});
-
-
-        // console.log(typeof graphs);
-        // console.log(Object.keys(graphs));
+            var node = document.getElementById("all_chart");
             for(var i=0;i<Object.keys(graphs).length;i++)
             {   
+                var item = document.createElement("DIV")
+                item.setAttribute("id","chart"+String(i+1));
+                node.appendChild(item);
                 Plotly.plot('chart'+String(i+1),graphs[i],{},{responsive:true});
             }
         

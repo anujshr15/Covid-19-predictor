@@ -54,11 +54,14 @@ def hello_world():
 		for link in news.find_all('a'):
 			links.append("https://news.google.com"+link.get('href')[1:])
 
-	data=pd.read_csv('https://api.covid19india.org/csv/latest/case_time_series.csv',parse_dates=True)
-	confirmed=data['Total Confirmed'].iat[-1]
-	recovered=data['Total Recovered'].iat[-1]
-	deaths=data['Total Deceased'].iat[-1]
-
+	# data=pd.read_csv('https://api.covid19india.org/csv/latest/case_time_series.csv',parse_dates=True)
+	# confirmed=data['Total Confirmed'].iat[-1]
+	# recovered=data['Total Recovered'].iat[-1]
+	# deaths=data['Total Deceased'].iat[-1]
+	df=pd.read_csv('https://api.covid19india.org/csv/latest/state_wise.csv',parse_dates=True)
+	confirmed=df.loc[0,'Confirmed']
+	recovered=df.loc[0,'Recovered']
+	deaths = df.loc[0,'Deaths']
 
 	return render_template("index.html",**locals())
 
@@ -113,38 +116,11 @@ def show_SVR():
 	return render_template('index.html',graphJSON=graphJSON,prediction=prediction)
 
 
-# @app.route('/train_XGB',methods=['GET'])
-# def show_XGB():
-# 	pred_df=pd.read_csv('pred_df_xgb.csv',parse_dates=True)
-# 	fig = go.Figure()
-# 	fig.add_trace(go.Scatter(x=pred_df['Date'], y = pred_df['Cases'] , mode='lines+markers',name='Prediction',line={'color':'red'}))
-# 	fig.add_trace(go.Scatter(x=actual_df['Date'], y =actual_df['Cases'], mode='lines+markers',name='Actual so far',line={'color':'blue'}))
-# 	fig.update_layout(    paper_bgcolor='rgba(0,0,0,0)',autosize=True,title_text='Prediction of Coronavirus Cases in India',xaxis_title='Date',yaxis_title='Corona Virus Cases',plot_bgcolor='rgb(230, 230, 230)')
-	
-# 	# data=[t1,t2]
-# 	graphJSON = json.dumps([fig], cls=plotly.utils.PlotlyJSONEncoder)
-# 	prediction="The number of cases might reach upto  "+str(int(pred_df["Cases"].iat[-1]))+" on "+ str(pred_df["Date"].iat[-1])+" as per Support Vector Regression predictor"
-
-# 	return render_template('index.html',graphJSON=graphJSON,prediction=prediction)
-
-
-
 
 
 @app.route('/train_arima',methods=['GET'])
 def show_arima():
 
-	# history = [x for x in actual_df['Cases'].values]
-	# y_arima_pred=[]
-	# for t in range(days_in_future):
-	# 	model = ARIMA(history, order=(10,1,0))
-	# 	model_fit = model.fit()
-	# 	output = model_fit.forecast(disp=0)
-	# 	yhat = output[0]
-	# 	y_arima_pred.append(yhat)
-	# 	# obs = test[t]
-	# 	history.append(yhat)
-	# N=len(actual_df)
 
 	pred_df=pd.read_csv('arima_pred.csv',parse_dates=True)
 	#actual_df= pd.DataFrame({'Date':np.array(future_forecast_dates[:-days_in_future]).reshape(-1,),'Cases':confirmed_cases.reshape(-1,)})
@@ -171,8 +147,13 @@ def state_wise_trend():
 				 fill_color='lavender'))
 
                      ])
-	fig.update_layout(autosize=True)
-	graphJSON = json.dumps([fig], cls=plotly.utils.PlotlyJSONEncoder)
+	fig.update_layout(autosize=True,height=1200,margin=dict(t=30, b=0, l=0, r=0))
+
+	graphJSON = json.dumps([fig],cls=plotly.utils.PlotlyJSONEncoder)
+	
+
+
+
 	return render_template('index.html',graphJSON=graphJSON)
 
 

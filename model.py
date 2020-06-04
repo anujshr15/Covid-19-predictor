@@ -17,7 +17,7 @@ from statsmodels.tsa.arima_model import ARIMAResults
 # import folium 
 # from folium import plugins
 
-plt.rcParams['figure.figsize'] = 15, 12
+# plt.rcParams['figure.figsize'] = 15, 12
 # Disable warnings 
 import warnings
 warnings.filterwarnings('ignore')
@@ -268,6 +268,6 @@ def train_arima():
 	# plt.plot(predictions, color='red')
 	# plt.show()
 
-# train_model_LR()
-# train_model_svr()
+train_model_LR()
+train_model_svr()
 train_arima()
