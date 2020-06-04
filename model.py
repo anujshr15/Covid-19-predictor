@@ -39,57 +39,21 @@ from joblib import dump,load
 total_data= pd.read_csv('https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv',parse_dates=True)
 total_data_ind=total_data[total_data['location']=='India']
 
-total_data_ind.tail()
 
-total_data_ind.columns
 
 df=total_data_ind[['date','total_cases']]
 
 df.columns=['Date','Confirmed']
 
-# df = pd.read_csv('../input/covid19-in-india/covid_19_india.csv',parse_dates=True)
-# df.shape
 
-# df.drop('Sno',axis=1,inplace=True)
+# total_data_ind=pd.read_csv('https://api.covid19india.org/csv/latest/case_time_series.csv',parse_dates=True)
 
-# df.drop(['ConfirmedIndianNational','ConfirmedForeignNational'],axis=1,inplace=True)
 
-# df.dropna(how='any',axis=0,inplace=True)
+# df=total_data_ind[['Date','Total Confirmed','Total Recovered','Total Deceased']]
 
-# df['Cured']=df['Cured'].apply(lambda x: int(x))
-# df['Deaths']=df['Deaths'].apply(lambda x: int(x))
-
+# df.rename(columns={'Total Confirmed':'Confirmed','Total Recovered':'Recovered','Total Deceased':'Deaths'},inplace=True)
 
 current_date=df['Date'].iat[-1]
-# total_so_far = df[df['Date']==current_date]['Confirmed'].sum()
-# print(f"Total cases in India as of {current_date} are {total_so_far}")
-
-# ## Statewise distribution of cases
-
-# df['active_cases']=df['Confirmed']-df['Cured']-df['Deaths']
-# df[df['Date']==current_date][['State/UnionTerritory','Cured','Deaths','Confirmed']].sort_values('Confirmed',ascending=False).style.background_gradient(cmap='Reds').hide_index()
-
-
-# ## Active cases distribution
-
-# df[df['Date']==current_date][['State/UnionTerritory','active_cases']].sort_values('active_cases',ascending=False).rename(columns= {'active_cases':'Active Cases'}).style.background_gradient(cmap='Reds').hide_index()
-
-# ## Confirmed vs Cured figures
-
-# f, ax = plt.subplots(figsize=(12, 10))
-# data = df[df['Date']==current_date][['State/UnionTerritory','Cured','Deaths','Confirmed','active_cases']]
-# data.sort_values('Confirmed',ascending=False,inplace=True)
-# sns.set_color_codes("pastel")
-# sns.barplot(x="Confirmed", y="State/UnionTerritory", data=data,label="Total", color="r")
-
-# sns.set_color_codes("muted")
-# sns.barplot(x="Cured", y="State/UnionTerritory", data=data, label="Cured", color="g")
-
-# max_cases=data['Confirmed'].iat[0]
-
-# ax.legend(ncol=2, loc="lower right", frameon=True)
-# ax.set(xlim=(0, max_cases), ylabel="",xlabel="Cases")
-# sns.despine(left=True, bottom=True)
 
 datewise_df = df.copy()
 
@@ -292,7 +256,7 @@ def train_arima():
 	# plt.plot(predictions, color='red')
 	# plt.show()
 
-# train_model_LR()
-# train_model_svr()
-# train_arima()
+train_model_LR()
+train_model_svr()
+train_arima()
 train_xgb()

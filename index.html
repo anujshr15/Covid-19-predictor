@@ -25,12 +25,33 @@
     } 
 } 
 
+table {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+.card {
+    border-radius: 0;
+}
+
+.overlay-img {
+    position: relative;
+}
+
+.stack-top {
+    position: absolute;
+    top:40%;
+    /*right: 2%;*/
+    width: 50%;
+    z-index: 1000;
+}
+
         </style>
 
 
     
     </head>
-    <body bgcolor="#ffffff">
+    <body bgcolor="#ffffff" >
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="/">Covid-19 Predictor</a>
@@ -67,9 +88,18 @@
 </nav>
     
         <div id="home">
-            <div id="corona-img"><img id="image" src="https://images.unsplash.com/flagged/photo-1584036561584-b03c19da874c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1489&q=80"
+            <div class='overlay-img'>
+            <div>
+                <table class="table table-responsive-sm w-100 stack-top" style="text-align: center;">
+                    <thead><tr><th class="col-3"><h1>Confirmed</h1></th><th class="col-3" ><h1>Recovered</h1></th><th class="col-6"><h1>Death</h1></th></tr></thead>
+                    <tbody><tr><td class="col-3"><h1>{{confirmed}}</h1></td><td  class="col-3"><h1>{{recovered}}</h1></td><td class="col-6"><h1>{{deaths}}</h1></td></tr></tbody>
+                </table>
+            </div>
+            <div id="corona-img" style="opacity: 0.3;" ><img id="image" src="https://images.unsplash.com/flagged/photo-1584036561584-b03c19da874c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1489&q=80"
             style="height: 70vh;width: 100%"></div>
+            
 
+            </div>
             <div class="card card-body bg-light">
                 <h3>What's new ?</h3>
                 <div id="all_news" style="margin-top: 20px;">
@@ -77,8 +107,16 @@
                     {% for i in range(news_summaries|length) %}
                     <p><a href={{links[i]}}> {{news_summaries[i]}} </a></p>
                     {% endfor %}
-                    
-                </div>
+                    <p><a href="https://news.google.com/search?q=coronavirus+india">See all</a></p>
+            </div>
+            </div>
+
+            <div id="about_project" class="card card-body bg-dark" style="margin: 0;">
+
+                <h3 style="color: white;">About the project</h3>
+                <p style="color: white">This project is solely for learning purpose. It aims to predict the Covid-19 cases in India based on previous time-series data. 
+                Currently it uses Ridge Regression,Support Vector Regression and ARIMA models. </p>
+            </div>
 
 
 <!-- 
@@ -87,7 +125,7 @@ https://news.google.com/search?q=coronavirus+india -->
 
 
 
-            </div>
+            
         </div>
 
         <div class="container">

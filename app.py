@@ -54,18 +54,10 @@ def hello_world():
 		for link in news.find_all('a'):
 			links.append("https://news.google.com"+link.get('href')[1:])
 
-		
-
-	
-
-
-	# l = scrape_news_summaries("T-Notes")
-	for n in links:
-		print(n)
-
-
-
-
+	data=pd.read_csv('https://api.covid19india.org/csv/latest/case_time_series.csv',parse_dates=True)
+	confirmed=data['Total Confirmed'].iat[-1]
+	recovered=data['Total Recovered'].iat[-1]
+	deaths=data['Total Deceased'].iat[-1]
 
 
 	return render_template("index.html",**locals())
