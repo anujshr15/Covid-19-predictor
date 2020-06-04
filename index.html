@@ -2,6 +2,7 @@
     <html>
 
     <head >
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Covid-19 Predictor</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
@@ -15,16 +16,70 @@
     animation-iteration-count: 1; 
     animation-fill-mode: forwards; 
     margin-bottom: 0;
-    overflow: auto;
+    /*overflow: hidden;*/
+    min-height: 100%;
+    width: 100%;
+    padding: 0;
 } 
 
-vh -> body { height: 100vh; }
+
+html {height:100%; width: 100%}
+
+
+@media (max-width: 645px) {
+#stats {
+    display: none;
+}
+#word-stats {
+    display: block;
+    top: 20%;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    color: crimson;
+}
+
+#word-stats td {
+    padding: 5px;
+    padding-bottom:0.5em;
+    border-top: none;
+
+
+}
+
+
+}
+
+@media (max-width: 300px)
+{
+    #word-stats {
+        display: none;
+    }
+}
+
+
+
+@media (min-width: 646px)
+{
+    #word-stats {
+        display: none;
+        width: 100%;
+        margin: auto;
+    }
+}
+
 
 @media (max-width: 768px) {
   .container {
     width: 100%;
     max-width: none;
   }
+}
+
+#wrapper {
+overflow-x: hidden;
+position: relative;
 }
 
 @keyframes fadeInAnimation { 
@@ -41,12 +96,18 @@ table {
     word-wrap: break-word;
 }
 
+td {
+    overflow: hidden;
+}
+
 .card {
     border-radius: 0;
 }
 
 .overlay-img {
     position: relative;
+    text-align: center;
+    display: inline-block;
 }
 
 .stack-top {
@@ -55,6 +116,7 @@ table {
     /*right: 2%;*/
     width: 50%;
     z-index: 1000;
+    text-align: center;
 }
 
         </style>
@@ -63,7 +125,7 @@ table {
     
     </head>
     <body bgcolor="#ffffff" >
-
+    <div id="wrapper">
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="/">Covid-19 Predictor</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,9 +163,17 @@ table {
         <div id="home" >
             <div class='overlay-img'>
             <div>
-                <table class="table table-responsive-sm w-100 stack-top" style="text-align: center;">
+                <table id="stats" class="table table-responsive-sm w-100 stack-top" style="text-align: center;">
                     <thead><tr><th class="col-3"><h1>Confirmed</h1></th><th class="col-3" ><h1>Recovered</h1></th><th class="col-6"><h1>Death</h1></th></tr></thead>
                     <tbody><tr><td class="col-3"><h1>{{confirmed}}</h1></td><td  class="col-3"><h1>{{recovered}}</h1></td><td class="col-6"><h1>{{deaths}}</h1></td></tr></tbody>
+                </table>
+            </div>
+            <div>
+                <table id="word-stats" class="table stack-top" style="text-align: center;width: auto;" >
+                   
+                    <tbody style="display: inline-block;"><tr><td><h4>Confirmed </h4></td><td><h4>{{confirmed}}</h4></td></tr>
+                    <tr><td><h4>Recovered </h4></td><td><h4>{{recovered}}</h4></td></tr>
+                    <tr><td><h4>Deaths</h4></td><td><h4>{{deaths}}</h4></td></tr></tbody>
                 </table>
             </div>
             <div id="corona-img" style="opacity: 0.3;" ><img id="image" src="https://images.unsplash.com/flagged/photo-1584036561584-b03c19da874c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1489&q=80"
@@ -144,12 +214,13 @@ https://news.google.com/search?q=coronavirus+india -->
     </div>
     <div id="state_table">
 </div>
+</div>
         </body>
 
   
-        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+       
             <script type="text/javascript">
-                
+      
 
 
                     var url = window.location.href
@@ -157,15 +228,6 @@ https://news.google.com/search?q=coronavirus+india -->
                 document.getElementById('home').style.display='none';
                 }
 
-                
-            // var state_df = {{df|safe}};
-            // {% if state_df %}
-            // var node = document.getElementById("state_table");
-            // var item = document.createElement("DIV");
-            // var text = document.createTextNode(state_df);
-            // item.appendChild(text);
-            // node.appendChild(item);
-            // {%endif%}
 
 
           var graphs = {{graphJSON | safe }};   
@@ -181,8 +243,9 @@ https://news.google.com/search?q=coronavirus+india -->
 
 
 
-        </script>
 
+        </script>
+ <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   
     </html> 
