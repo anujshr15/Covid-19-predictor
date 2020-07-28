@@ -53,7 +53,7 @@ soupsieve==2.0.1
 statsmodels==0.11.1
 threadpoolctl==2.0.0
 tqdm==4.45.0
-urllib3==1.24.1
+urllib3==1.24.2
 webencodings==0.5.1
 Werkzeug==1.0.1
 win-inet-pton==1.1.0
